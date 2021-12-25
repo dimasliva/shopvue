@@ -13,9 +13,9 @@
       <label class="product-line-price">Total</label>
     </div>
 
-    <div class="product" v-bind:key="product" v-for="product in products">
+    <div class="product" v-bind:style="product.qty > 0 ? {'border': '1px solid green'} : {'border:': 'none'}" v-bind:key="product.id" v-for="product in products">
       <div class="product-image">
-        <img :src="product.img" >
+        <img :src="product.img" />
       </div>
       <div class="product-details">
         <div class="product-title">{{product.title}}</div>
@@ -23,24 +23,30 @@
       </div>
       <div class="product-price">{{product.price}}</div>
       <div class="product-quantity">
-        <input type="number" value="2" min="1">
-      </div>
+        <p class="product-description">{{product.qty}}</p>
+
+      <!--    Buttons    -->
       <div class="product-removal">
-        <button class="add-product" @click="addToCart(product)">
+        <button class="add-product" @click="addQtyProduct(product.id)">
           Add
         </button>
-        <button @click="removeItem(product)" class="remove-product">
+        <button class="add-product" @click="addToCart(product)">
+          Add to Cart
+        </button>
+        <button @click="removeItemProduct(product.id)" class="remove-product">
           Remove
         </button>
       </div>
-      <div class="product-line-price">25.98</div>
+        <!--    Total Price    -->
+      <div class="product-line-price" style="float: right">{{product.total}}</div>
+    </div>
     </div>
 
-<!--    <div class="totals">-->
-<!--      <div class="totals-item">-->
-<!--        <label>Subtotal</label>-->
-<!--        <div class="totals-value" id="cart-subtotal">71.97</div>-->
-<!--      </div>-->
+    <div class="totals" style="float: right;">
+      <div class="totals-item">
+        <label>Subtotal</label>
+        <div class="totals-value" id="cart-subtotal">{{totalPrice}}</div>
+      </div>
 <!--      <div class="totals-item">-->
 <!--        <label>Tax (5%)</label>-->
 <!--        <div class="totals-value" id="cart-tax">3.60</div>-->
@@ -53,7 +59,7 @@
 <!--        <label>Grand Total</label>-->
 <!--        <div class="totals-value" id="cart-total">90.57</div>-->
 <!--      </div>-->
-<!--    </div>-->
+    </div>
 
 <!--    <button class="checkout">Checkout</button>-->
 
@@ -66,7 +72,7 @@
   export default {
   name: 'HelloWorld',
     props: {
-    msg: String
+    // msg: String
   },
   data() {
     return {
@@ -75,12 +81,16 @@
   },
     computed: {
     ...mapGetters(["products"]),
+      totalPrice()
+      {
+        return this.products.reduce((a,b) => a + b.qty * b.price, 0);
+      },
     },
   methods: {
-    ...mapActions((["getProducts", "addToCart"])),
+    ...mapActions(["getProducts", "addToCart", "addQtyProduct", "removeItemProduct" ]),
   },
     mounted() {
-    this.getProducts()
+      this.getProducts();
     }
   }
 </script>

@@ -3,33 +3,52 @@
     <div class="container">
         <div class="shopping-cart">
             <div class="shopping-cart-header">
-                <i class="fa fa-shopping-cart cart-icon"></i><span class="badge">3</span>
+                <i class="fa fa-shopping-cart cart-icon"></i><span class="badge">{{totalQty}}</span>
                 <div class="shopping-cart-total">
                     <span class="lighter-text">Total:</span>
-                    <span class="main-color-text">$0</span>
+                    <span class="main-color-text">${{totalPrice}}</span>
                 </div>
             </div> <!--end shopping-cart-header -->
 
-            <ul class="shopping-cart-items"  v-for="product in cart" :key="product.id">
-                <li class="clearfix">
+            <ul class="shopping-cart-items">
+                <li class="clearfix" style="list-style: none;"  v-for="product in cart" :key="product.id">
                     <img style="width: 80px" v-bind:src="product.img" alt="item1"/>
                     <span class="item-name">{{product.title}}</span>
                     <span class="item-price">${{product.price}}</span>
                     <span class="item-quantity">Quantity: {{product.qty}}</span>
+                    <br>
+                    <button @click="addQty(product.id)">+</button>
+                    <button @click="reduceQty(product.id)">-</button>
+                    <button @click="removeItem(product.id)">x</button>
                 </li>
             </ul>
 
-            <a href="#" class="button">Checkout</a>
+            <a href="#" class="button" :style="totalQty > 0
+            ? {}
+            : {'background-color': 'gray', 'cursor': 'not-allowed'}" :disabled="totalQty < 0">
+                Зказать
+            </a>
         </div> <!--end shopping-cart -->
     </div> <!--end container -->
 </template>
 
 <script>
-    import {mapGetters} from 'vuex';
+    import {mapGetters, mapActions} from 'vuex';
     export default {
         name: "Cart",
         computed: {
-            ...mapGetters(["cart"])
+            ...mapGetters(["cart"]),
+            totalPrice()
+            {
+                return this.cart.reduce((a,b) => a + b.qty * b.price, 0)
+            },
+            totalQty()
+            {
+                return this.cart.reduce((a,b) => a + b.qty, 0)
+            },
+        },
+        methods: {
+            ...mapActions(["addQty", "reduceQty", "removeItem", "totalPrice"])
         }
     }
 </script>
