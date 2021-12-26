@@ -41,15 +41,20 @@ export default new Vuex.Store({
     removeItemProduct({commit}, id){
       commit("removeItemProduct", id);
     },
+    reduceItemProduct({commit}, id){
+      commit("reduceItemProduct", id);
+    },
     totalPrice({commit}){
       commit("totalPrice");
+    },
+    emptyCart({commit}){
+      commit("emptyCart");
+    },
+    emptyProducts({commit}){
+      commit("emptyProducts");
     }
   },
   mutations: {
-    REMOVE_OBJECT_FROM_ARRAY: (state, payload) => {
-      const i = state.products.map(item => item.id).indexOf(payload);
-      state.products.splice(i, 1);
-    },
     getProductData(state) {
       state.products = products;
     },
@@ -71,8 +76,21 @@ export default new Vuex.Store({
     {
       const i = state.products.map(item => item.id).indexOf(id);
       state.products.splice(i, 1);
-      console.log(i);
       },
+    reduceItemProduct(state, id)
+    {
+      const currentItem = state.products.find((product) => product.id === id);
+      if(currentItem.qty > 0) {
+        currentItem.qty--;
+      } else {
+        const i = state.products.map(item => item.id).indexOf(id);
+        state.products.splice(i, 1);
+      }
+    },
+    emptyProducts(state)
+    {
+      state.products = [];
+    },
     // Actions of Cart
     addQty(state, id)
     {
@@ -91,6 +109,10 @@ export default new Vuex.Store({
     removeItem(state, id)
     {
       state.cart = state.cart.filter((product) => product.id !== id);
+    },
+    emptyCart(state)
+    {
+      state.cart = [];
     },
   },
   modules: {

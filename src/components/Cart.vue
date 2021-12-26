@@ -23,11 +23,17 @@
                 </li>
             </ul>
 
-            <a href="#" class="button" :style="totalQty > 0
+            <a href="#" :disabled="!isProcessing" @click="placeOrder" v-if="!isProcessing" class="button"
+               :style="totalQty > 0
             ? {}
-            : {'background-color': 'gray', 'cursor': 'not-allowed'}" :disabled="totalQty < 0">
+            : {'background-color': 'gray', 'cursor': 'not-allowed'}" >
                 Зказать
             </a>
+            <div v-else>
+                <a href="#" class="button">
+                    Loading...
+                </a>
+            </div>
         </div> <!--end shopping-cart -->
     </div> <!--end container -->
 </template>
@@ -36,6 +42,12 @@
     import {mapGetters, mapActions} from 'vuex';
     export default {
         name: "Cart",
+        data() {
+            return {
+                isProcessing: false,
+                orderPlaced: false
+            }
+        },
         computed: {
             ...mapGetters(["cart"]),
             totalPrice()
@@ -48,7 +60,17 @@
             },
         },
         methods: {
-            ...mapActions(["addQty", "reduceQty", "removeItem", "totalPrice"])
+            ...mapActions(["addQty", "reduceQty", "removeItem", "totalPrice", "emptyCart"]),
+
+            placeOrder(){
+                this.isProcessing = true;
+                setTimeout(() => {
+                    this.orderPlaced = true;
+                    this.isProcessing = false;
+                    this.emptyCart();
+                }, 1000)
+                return this.alert = !this.alert;
+            }
         }
     }
 </script>

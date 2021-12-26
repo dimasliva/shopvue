@@ -13,6 +13,9 @@
       <label class="product-line-price">Total</label>
     </div>
 
+    <!--  Alert message -->
+    <AlertConfirm v-if="alert" v-bind:totalPrice="totalPrice"/>
+
     <div class="product" v-bind:style="product.qty > 0 ? {'border': '1px solid green'} : {'border:': 'none'}" v-bind:key="product.id" v-for="product in products">
       <div class="product-image">
         <img :src="product.img" />
@@ -23,14 +26,17 @@
       </div>
       <div class="product-price">{{product.price}}</div>
       <div class="product-quantity">
-        <p class="product-description">{{product.qty}}</p>
+        <p class="product-description" v-if="product.qty > 0">{{product.qty}}</p>
+        <p class="product-description" v-else></p>
 
       <!--    Buttons    -->
       <div class="product-removal">
         <button class="add-product" @click="addQtyProduct(product.id)">
           Add
         </button>
-        <button class="add-product" @click="addToCart(product)">
+        <button @click="reduceItemProduct(product.id)" class="remove-product">
+          Reduce
+        </button> <button class="add-product" @click="addToCart(product)">
           Add to Cart
         </button>
         <button @click="removeItemProduct(product.id)" class="remove-product">
@@ -61,7 +67,10 @@
 <!--      </div>-->
     </div>
 
-<!--    <button class="checkout">Checkout</button>-->
+    <button class="checkout" @click="showAlert" :disabled="totalPrice <= 0"
+            :style="totalPrice > 0
+            ? {}
+            : {'background-color': 'gray', 'cursor': 'not-allowed'}">Зказать</button>
 
   </div>
 </template>
@@ -69,14 +78,19 @@
 <script>
   import products from "@/mock/products.json";
   import {mapGetters, mapActions} from 'vuex';
+  import AlertConfirm from "./AlertConfirm";
   export default {
   name: 'HelloWorld',
+    components: {AlertConfirm},
     props: {
     // msg: String
   },
   data() {
     return {
       products,
+      alert: false,
+      isProcessing: false,
+      orderPlaced: false
     }
   },
     computed: {
@@ -85,9 +99,13 @@
       {
         return this.products.reduce((a,b) => a + b.qty * b.price, 0);
       },
+
     },
   methods: {
-    ...mapActions(["getProducts", "addToCart", "addQtyProduct", "removeItemProduct" ]),
+    ...mapActions(["getProducts", "addToCart", "addQtyProduct", "removeItemProduct", "reduceItemProduct", "emptyProducts" ]),
+    showAlert(){
+      return this.alert = !this.alert;
+    }
   },
     mounted() {
       this.getProducts();
