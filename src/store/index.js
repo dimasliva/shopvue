@@ -1,7 +1,8 @@
 import {createApp} from 'vue';
 import Vuex from 'vuex';
 import App from '@/App.vue'
-import  products from '@/mock/products.json';
+import products from '@/mock/products.json';
+
 
 const app = createApp(App);
 app.use(Vuex);
@@ -89,7 +90,7 @@ export default new Vuex.Store({
     },
     emptyProducts(state)
     {
-      state.products = [];
+      state.products.splice(0);
     },
     // Actions of Cart
     addQty(state, id)

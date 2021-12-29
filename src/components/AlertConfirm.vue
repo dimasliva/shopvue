@@ -1,6 +1,6 @@
 <template>
     <div class="modal" v-if="alert">
-        <p v-if="isProcessing == 0" class="message">Make an order worth ${{totalPrice}}</p>
+        <p v-if="isProcessing == 0" class="message">Make an order worth $ {{totalPrice}}</p>
         <p v-if="isProcessing == 1" class="message">Loading...</p>
         <p v-if="isProcessing == 2" class="message">Success</p>
         <div class="options">
@@ -13,7 +13,7 @@
 
 <script>
 
-    import {mapActions} from "vuex";
+    import {mapActions, mapGetters} from "vuex";
 
     export default {
         name: "AlertConfirm",
@@ -25,14 +25,15 @@
                 alert: true
             }
         },
-        props: {
-            totalPrice: {
-                type: String,
-                required: true
-            }
+        computed: {
+            ...mapGetters(["products"]),
+            totalPrice()
+            {
+                return this.products.reduce((a,b) => a + b.qty * b.price, 0);
+            },
         },
         methods: {
-            ...mapActions([ "emptyProducts"]),
+            ...mapActions(["emptyProducts"]),
             placeOrder(){
                 this.isProcessing = true;
                 setTimeout(() => {
@@ -41,8 +42,9 @@
                     this.emptyProducts();
                 }, 1000)
                 this.isProcessing = 1;
-            }
+            },
         },
+
     }
 </script>
 

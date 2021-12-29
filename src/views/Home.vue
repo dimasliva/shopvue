@@ -1,19 +1,19 @@
 <template>
   <div class="home">
     <Cart />
-    <HelloWorld/>
+    <Products/>
   </div>
 </template>
 
 <script>
-import HelloWorld from '@/components/HelloWorld.vue'
+import Products from '@/components/Products.vue'
 import Cart from "@/components/Cart";
 
 export default {
   name: 'Home',
   components: {
       Cart,
-    HelloWorld,
+    Products,
   },
 
 }

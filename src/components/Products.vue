@@ -14,7 +14,7 @@
     </div>
 
     <!--  Alert message -->
-    <AlertConfirm v-if="alert" v-bind:totalPrice="totalPrice"/>
+    <AlertConfirm v-if="alert"/>
 
     <div class="product" v-bind:style="product.qty > 0 ? {'border': '1px solid green'} : {'border:': 'none'}" v-bind:key="product.id" v-for="product in products">
       <div class="product-image">
@@ -80,7 +80,7 @@
   import {mapGetters, mapActions} from 'vuex';
   import AlertConfirm from "./AlertConfirm";
   export default {
-  name: 'HelloWorld',
+  name: 'Products',
     components: {AlertConfirm},
     props: {
     // msg: String
