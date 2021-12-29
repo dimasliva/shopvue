@@ -83,6 +83,7 @@ export default new Vuex.Store({
       const currentItem = state.products.find((product) => product.id === id);
       if(currentItem.qty > 0) {
         currentItem.qty--;
+        currentItem.total = currentItem.total - currentItem.price;
       } else {
         const i = state.products.map(item => item.id).indexOf(id);
         state.products.splice(i, 1);
